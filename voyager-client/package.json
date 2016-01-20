@@ -1,10 +1,7 @@
 {
-  "name": "rdash-angular",
+  "name": "voyager-client",
   "version": "0.0.1",
-  "author": "Elliot Hesp",
-  "contributors": [
-    "Leonel Samayoa <leonel.e.samayoa@gmail.com> (http://gobliip.com)",
-    "Ricardo Pascua <rdpascua@outlook.com>"
+  "author": "cAct"  
   ],
   "devDependencies": {
     "bower": "1.7.2",

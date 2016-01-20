@@ -31,7 +31,7 @@ gulp.task('usemin', function() {
             js: [minifyJs()],
             css: [minifyCss({keepSpecialComments: 0}), 'concat'],
         }))
-        .pipe(gulp.dest('../dist.dev/'));
+        .pipe(gulp.dest('../dist/'));
 });
 
 
@@ -46,7 +46,7 @@ gulp.task('copy-bower_fonts', function() {
         .pipe(rename({
             dirname: '/fonts'
         }))
-        .pipe(gulp.dest('../dist.dev/styles'));
+        .pipe(gulp.dest('../dist/styles'));
 });
 
 /**
@@ -60,31 +60,31 @@ gulp.task('build-custom', ['custom-images', 'custom-js', 'custom-templates']);
  */
 gulp.task('build-bower-scripts', function(){
     return gulp.src(paths.bower_scripts)
-    .pipe(gulp.dest('../dist.dev/js'));	
+    .pipe(gulp.dest('../dist/js'));	
 });
 
 gulp.task('custom-images', function() {
     return gulp.src(paths.images)
-        .pipe(gulp.dest('../dist.dev/img'));
+        .pipe(gulp.dest('../dist/img'));
 });
 
 gulp.task('custom-js', function() {
     return gulp.src(paths.scripts)
         //.pipe(minifyJs())
         .pipe(concat('app.js'))
-        .pipe(gulp.dest('../dist.dev/js'));
+        .pipe(gulp.dest('../dist/js'));
 });
 
 /*gulp.task('custom-less', function() {
     return gulp.src(paths.styles)
         .pipe(less())
-        .pipe(gulp.dest('dist.dev/css'));
+        .pipe(gulp.dest('dist/css'));
 });*/
 
 gulp.task('custom-sass', function() {
 	  return gulp.src()
 	    .pipe(sass())
-	    .pipe(gulp.dest('../dist.dev/styles/css'));
+	    .pipe(gulp.dest('../dist/styles/css'));
 	});
 
 gulp.task('custom-templates', function() {
@@ -93,7 +93,7 @@ gulp.task('custom-templates', function() {
     		moduleName : "app.templates"
     	}))
     	.pipe(concat('app.templete.js'))
-    	.pipe(gulp.dest("../dist.dev/js"));
+    	.pipe(gulp.dest("../dist/js"));
 
 });
 
@@ -106,7 +106,7 @@ gulp.task('custom-templates', function() {
  */
 gulp.task('webserver', function() {
     connect.server({
-        root: '../dist.dev',
+        root: '../dist',
         livereload: true,
         port: 3003
     });
@@ -124,7 +124,7 @@ gulp.task('watch', function() {
 });
 
 gulp.task('livereload', function() {
-    gulp.src(['../dist.dev/**/*.*'])
+    gulp.src(['../dist/**/*.*'])
         .pipe(watch())
         .pipe(connect.reload());
 });

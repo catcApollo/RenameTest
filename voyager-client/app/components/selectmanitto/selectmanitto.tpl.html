@@ -1,0 +1,19 @@
+<div data-ng-controller ="selectmanittoController" data-ng-init="">
+	<div class="container">
+		<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+   		 Dropdown
+	    	<span class="caret"></span>
+	  	</button>
+	  	<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+		    <li><a href="#">Action</a></li>
+		    <li><a href="#">Another action</a></li>
+		    <li><a href="#">Something else here</a></li>
+		    <li role="separator" class="divider"></li>
+		    <li><a href="#">Separated link</a></li>
+		</ul>
+		<select data-ng-model="manittoSelection" data-ng-options="data.code as data.name for data in dataList" >
+			<option value="">--Choose your name--</option>
+		</select>
+		<button class="btn btn-default" data-ng-click="selectManitto(manittoSelection)">select</button>		
+	</div>
+</div>

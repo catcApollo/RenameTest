@@ -7,10 +7,16 @@ var gulp = require('gulp'),
     minifyJs = require('gulp-uglify'),
     concat = require('gulp-concat'),
     less = require('gulp-less'),
-   /* sass = require("gulp-sass"),*/
+    sass = require("gulp-sass"),
     rename = require('gulp-rename'),
     minifyHTML = require('gulp-minify-html'),
     ngHtml2Js = require("gulp-ng-html2js");
+
+//Testing tools
+var mochaSelenium = require("gulp-mocha-selenium"),
+	webdriver = require('selenium-webdriver'),
+	SeleniumServer = require('selenium-webdriver/remote').SeleniumServer,
+	SeleniumJar = require('selenium-server-standalone-jar');
 
 var paths = {
     scripts: '../app/components/**/*.js',
@@ -20,6 +26,7 @@ var paths = {
     index: '../app/index.html',
     bower_fonts: '../app/*/**/*.{ttf,woff,eof,svg}',
     bower_scripts: '../app/js/**/*.js',
+    test_scripts: '../app/test/*.*'
 };
 
 /**
@@ -52,7 +59,7 @@ gulp.task('copy-bower_fonts', function() {
 /**
  * Handle custom files
  */
-gulp.task('build-custom', ['custom-images', 'custom-js', 'custom-templates']);
+gulp.task('build-custom', ['custom-images', 'custom-js', 'custom-sass', 'custom-templates']);
 
 
 /**
@@ -65,14 +72,16 @@ gulp.task('build-bower-scripts', function(){
 
 gulp.task('custom-images', function() {
     return gulp.src(paths.images)
-        .pipe(gulp.dest('../dist/img'));
+        .pipe(gulp.dest('../dist/img'))
+        .pipe(connect.reload());
 });
 
 gulp.task('custom-js', function() {
     return gulp.src(paths.scripts)
         //.pipe(minifyJs())
         .pipe(concat('app.js'))
-        .pipe(gulp.dest('../dist/js'));
+        .pipe(gulp.dest('../dist/js'))
+        .pipe(connect.reload());
 });
 
 /*gulp.task('custom-less', function() {
@@ -82,9 +91,11 @@ gulp.task('custom-js', function() {
 });*/
 
 gulp.task('custom-sass', function() {
-	  return gulp.src()
+	  return gulp.src(paths.styles)
 	    .pipe(sass())
-	    .pipe(gulp.dest('../dist/styles/css'));
+	    .pipe(concat('styles.css'))
+	    .pipe(gulp.dest('../dist/styles/css'))
+	    .pipe(connect.reload());
 	});
 
 gulp.task('custom-templates', function() {
@@ -93,13 +104,10 @@ gulp.task('custom-templates', function() {
     		moduleName : "app.templates"
     	}))
     	.pipe(concat('app.templete.js'))
-    	.pipe(gulp.dest("../dist/js"));
+    	.pipe(gulp.dest("../dist/js"))
+    	.pipe(connect.reload());
 
 });
-
-
-
-
 
 /**
  * Live reload server
@@ -114,6 +122,7 @@ gulp.task('webserver', function() {
 
 /**
  * Watch custom files
+ * Observe if files are modified and reload web page
  */
 gulp.task('watch', function() {
     gulp.watch([paths.images], ['custom-images']);
@@ -123,18 +132,45 @@ gulp.task('watch', function() {
     gulp.watch([paths.index], ['usemin']);
 });
 
-gulp.task('livereload', function() {
-    gulp.src(['../dist/**/*.*'])
-        .pipe(watch())
-        .pipe(connect.reload());
+/**
+ * Selenium Test
+ * Error handler and Configuration
+ */
+
+/*gulp.task('seleniumServerInit', function(){
+	console.log(SeleniumJar.path);
+	var server = new SeleniumServer(SeleniumJar.path, {
+		port: 4444
+	});
+	server.start();
+	
+	var driver = new webdriver.Builder().
+    usingServer(server.address()).
+    withCapabilities(webdriver.Capabilities.firefox()).
+    build();
+	
+});
+*/
+function handleError(err){
+	console.log(err.toString());
+	this.emit('end');
+}
+
+gulp.task('seleniumTest', function(){
+	return gulp.src(paths.test_scripts, {read: false})
+		.pipe(mochaSelenium({
+			browserName: 'chrome',
+			host: '127.0.0.1',
+			port: '4444',
+			reporter: 'nyan',
+			timeout: '100000'
+		}).on("error", handleError));
 });
 
-
-
-
+gulp.task('test', ['seleniumServerInit', 'seleniumTest']);
 
 /**
  * Gulp tasks
  */
-gulp.task('build', ['usemin', 'build-assets', 'build-custom', 'build-bower-scripts', 'custom-templates']);
-gulp.task('default', ['build', 'webserver', 'livereload']);
+gulp.task('build', ['usemin', 'build-assets', 'build-custom', 'build-bower-scripts', 'watch'/*'custom-templates'*/]);
+gulp.task('default', ['build', 'webserver']);

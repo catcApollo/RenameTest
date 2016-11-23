@@ -1,0 +1,38 @@
+<div data-ng-controller ="totalviewController" data-ng-init="">
+
+	<div class="container">
+		<ul style="width:100%; list-style-type: none; padding:0; position: relative; ">
+			<li style="float:left; padding:20px;" data-ng-repeat ="data in dataList">
+				<table class ="table table-responsive" style="width:300px; background-color: white;" >
+					<thead>
+					<tr>
+						<th style="background-color:#FFDC3C;">
+							<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+							<label style="margin-left:10px; margin-bottom:0; margin-top:5px;">{{data.name}}</label>
+						</th>
+					</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td style="background-color:white">
+								<span class="glyphicon glyphicon-star" aria-hidden="true"><label style="font-weight:strong; margin-left:10px; font-family: arial">From Me..</label></span>
+								<br><br>
+								<label style="font-weight: normal; font-family:malgungothic;">{{data.today}}</label>
+							</td>
+						</tr>
+						<tr data-ng-repeat="data in data.dataMessageList">
+							<td style="font-family:malgungothic; background-color:#E0ECF8" data-ng-if="data.messageShowYn == 'Y'">
+								<span class="glyphicon glyphicon-heart" aria-hidden="true"><label style="font-weight:strong; margin-left:10px; font-family: arial">To Me..</label></span>
+								<br><br>
+								<label style="width:90%; font-weight: normal;">{{data.message}}</label>
+								<button data-ng-click="deleteMessage(data.messageKey)" class="btn btn-default btn-xs" style="border:none; background-color: transparent;"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+							</td>
+						</tr>						
+					</tbody>
+				</table>				
+			</li>			
+		</ul>
+	 
+	</div>
+	
+</div>
